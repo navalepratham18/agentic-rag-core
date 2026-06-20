@@ -19,8 +19,6 @@ class Settings(BaseSettings):
     # ---------------------------------------------------------------------------
     # Compute & Engine Strategy
     # ---------------------------------------------------------------------------
-    # For a local non-spend setup, we default to local mock routing. 
-    # Switch to 'bedrock' to trigger active AWS calls.
     ROUTING_STRATEGY: Literal["mock", "bedrock"] = Field(
         default="mock",
         description="Determines if routing is handled locally or passed to AWS Bedrock."
@@ -55,14 +53,24 @@ class Settings(BaseSettings):
     )
 
     # ---------------------------------------------------------------------------
+    # LLM Settings (Local Ollama)
+    # ---------------------------------------------------------------------------
+    OLLAMA_BASE_URL: str = Field(
+        default="http://host.docker.internal:11434",
+        description="The base URL for the Ollama API endpoint."
+    )
+    LLM_MODEL: str = Field(
+        default="llama3.2:latest",
+        description="The specific language model to use for inference."
+    )
+
+    # ---------------------------------------------------------------------------
     # Pydantic Settings Configuration
     # ---------------------------------------------------------------------------
-    # Automatically reads from a local .env file if it exists, matching environment targets
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore" # Drops non-declared environment variables safely
+        extra="ignore" 
     )
 
-# Instantiate a single global settings object to share across the application modules
 settings = Settings()
